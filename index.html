@@ -1,13 +1,394 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<title>Meu Site</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Conteúdo</title>
+    <style>
+        :root {
+            --cor-principal: #e50914;
+            --fundo: #141414;
+            --texto: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--fundo);
+            color: var(--texto);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), var(--fundo));
+            padding: 20px 5%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--cor-principal);
+            letter-spacing: -2px;
+        }
+        
+        .titulo-principal {
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 120px;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .secao {
+            padding: 0 5% 60px;
+        }
+        
+        .secao h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--cor-principal);
+            padding-left: 15px;
+        }
+        
+        .grid-videos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: #222;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: scale(1.08) translateY(-8px);
+            box-shadow: 0 20px 40px rgba(229, 9, 20, 0.3);
+        }
+        
+        .thumbnail {
+            width: 100%;
+            height: 158px;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        
+        .card:hover .thumbnail {
+            transform: scale(1.05);
+        }
+        
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background: rgba(229, 9, 20, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .card:hover .play-overlay {
+            opacity: 1;
+        }
+        
+        .play-overlay::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 18px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 4px;
+        }
+        
+        .info-card {
+            padding: 18px;
+        }
+        
+        .info-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .info-card p {
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+        
+        .btn-assistir {
+            margin-top: 12px;
+            background: var(--cor-principal);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-assistir:hover {
+            background: #f40612;
+        }
+        
+        /* MODAL PLAYER */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            width: 100%;
+            max-width: 1100px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(229, 9, 20, 0.5);
+            position: relative;
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            background: #111;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.4rem;
+            color: white;
+        }
+        
+        .close-btn {
+            font-size: 2.2rem;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: white;
+        }
+        
+        .player-container {
+            padding: 20px;
+            background: #000;
+        }
+        
+        video {
+            width: 100%;
+            max-height: 75vh;
+            border-radius: 10px;
+            background: #000;
+        }
+        
+        .modal-footer {
+            padding: 15px 30px;
+            background: #111;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .titulo-principal {
+                font-size: 2.4rem;
+            }
+            .grid-videos {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .card {
+            animation: fadeIn 0.6s backwards;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">PORTAL</div>
+        <div style="color:#aaa; font-size:1.1rem;">Conteúdo • Lawtechs</div>
+    </header>
 
-<h1>Meu Site</h1>
-<p>Bem-vindo ao meu site.</p>
+    <!-- TÍTULO PRINCIPAL -->
+    <h1 class="titulo-principal">Portal de Conteúdo</h1>
 
+    <!-- SEÇÃO VÍDEOS -->
+    <section class="secao">
+        <h2>Vídeos</h2>
+        
+        <div class="grid-videos" id="grid-videos">
+            <!-- Cards serão gerados via JavaScript -->
+        </div>
+    </section>
+
+    <!-- MODAL PLAYER -->
+    <div class="modal" id="modal-player">
+        <div class="modal-content">
+            <!-- Cabeçalho do modal -->
+            <div class="modal-header">
+                <h2 id="modal-titulo">Título do Vídeo</h2>
+                <span class="close-btn" id="btn-fechar">×</span>
+            </div>
+            
+            <!-- Player -->
+            <div class="player-container">
+                <video id="video-player" controls autoplay>
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+            </div>
+            
+            <div class="modal-footer">
+                Pressione ESC ou clique em × para fechar
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DADOS DOS VÍDEOS ====================
+        // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+        // Aqui você troca facilmente os vídeos e thumbnails!
+        const videos = [
+            {
+                id: 1,
+                titulo: "Radar AB2L 2026 - Lawtechs Brasileiras",
+                src: "video1.mp4",
+                thumb: "https://picsum.photos/id/1015/600/338"
+            },
+            {
+                id: 2,
+                titulo: "Como a netLex revoluciona contratos com IA",
+                src: "video2.mp4",
+                thumb: "https://picsum.photos/id/201/600/338"
+            },
+            {
+                id: 3,
+                titulo: "Jusbrasil + IA: Pesquisa Jurídica em Segundos",
+                src: "video3.mp4",
+                thumb: "https://picsum.photos/id/237/600/338"
+            }
+        ];
+
+        // ==================== RENDERIZAR CARDS ====================
+        function renderizarCards() {
+            const grid = document.getElementById('grid-videos');
+            grid.innerHTML = '';
+            
+            videos.forEach(video => {
+                const cardHTML = `
+                    <div class="card" data-id="${video.id}">
+                        <div style="position:relative;">
+                            <img src="${video.thumb}" alt="${video.titulo}" class="thumbnail">
+                            <div class="play-overlay"></div>
+                        </div>
+                        <div class="info-card">
+                            <h3>${video.titulo}</h3>
+                            <button class="btn-assistir">▶ Assistir agora</button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+            
+            // Adicionar eventos de clique
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const id = parseInt(card.dataset.id);
+                    const videoSelecionado = videos.find(v => v.id === id);
+                    abrirPlayer(videoSelecionado);
+                });
+            });
+        }
+
+        // ==================== ABRIR PLAYER MODAL ====================
+        function abrirPlayer(video) {
+            const modal = document.getElementById('modal-player');
+            const videoElement = document.getElementById('video-player');
+            const tituloElement = document.getElementById('modal-titulo');
+            
+            tituloElement.textContent = video.titulo;
+            videoElement.src = video.src;
+            
+            modal.style.display = 'flex';
+            videoElement.play();
+        }
+
+        // ==================== FECHAR MODAL ====================
+        function fecharModal() {
+            const modal = document.getElementById('modal-player');
+            const videoElement = document.getElementById('video-player');
+            
+            videoElement.pause();
+            videoElement.src = '';
+            modal.style.display = 'none';
+        }
+
+        // ==================== EVENTOS ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCards();
+            
+            // Botão fechar
+            document.getElementById('btn-fechar').addEventListener('click', fecharModal);
+            
+            // Fechar com ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    fecharModal();
+                }
+            });
+            
+            // Fechar clicando fora do conteúdo
+            const modal = document.getElementById('modal-player');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) fecharModal();
+            });
+        });
+    </script>
 </body>
 </html>
