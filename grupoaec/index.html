@@ -1,16 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<title>Conteúdo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Conteúdo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0f0f0f;
+            color: #ffffff;
+            font-family: 'Inter', Arial, sans-serif;
+            text-align: center;
+            line-height: 1.6;
+        }
+        header {
+            padding: 40px 20px 30px;
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00ff9d, #00b8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            color: #aaaaaa;
+            font-weight: 400;
+        }
+        .video-container {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .video-box {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        video {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 15px;
+            border: 3px solid #00ff9d;
+        }
+        .download-btn {
+            margin-top: 20px;
+            display: inline-block;
+            background: #00ff9d;
+            color: #0f0f0f;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .download-btn:hover {
+            background: #00cc7a;
+            transform: scale(1.05);
+        }
+        footer {
+            margin-top: 60px;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <h1>Portal de Conteúdo</h1>
+        <p class="subtitle">Área de vídeos</p>
+    </header>
 
-<h1>Área de Conteúdo</h1>
+    <div class="video-container">
+        <div class="video-box">
+            <video controls>
+                <source src="video.mp4" type="video/mp4">
+                Seu navegador não suporta vídeo.
+            </video>
+        </div>
+        
+        <a href="Download (2).mp4" download class="download-btn">
+            📥 Baixar vídeo
+        </a>
+    </div>
 
-<video controls width="600">
-<source src="video.mp4" type="video/mp4">
-</video>
-
+    <footer>
+        Grupo AOEC • 2026
+    </footer>
 </body>
 </html>
