@@ -1,394 +1,429 @@
+<div class="modal-content">
+
+<span class="close" onclick="fechar()">×</span>
+
+<h2 id="titulo"></h2>
+
+<audio id="player" controls></audio>
+
+</div>
+
+</div>
+
+<script>
+
+const totalMusicas = 29;
+
+const grid = document.getElementById("grid");
+
+for(let i=1;i<=totalMusicas;i++){
+
+let num = String(i).padStart(2,'0');
+
+let arquivo = "musica"+num+".mp3";
+let arquivo = "musica"+i+".mp3";
+
+grid.innerHTML += `
+<div class="card" onclick="tocar('${arquivo}','Música ${num}')">
+<h3>Música ${num}</h3>
+</div>
+`;
+
+}
+
+function tocar(arquivo,titulo){
+
+document.getElementById("titulo").innerText = titulo;
+
+document.getElementById("player").src = arquivo;
+const player = document.getElementById("player");
+
+player.src = arquivo;
+
+document.getElementById("modal").style.display = "flex";
+
+player.play().catch(() => {});
+
+}
+
+function fechar(){
+
+let player = document.getElementById("player");
+
+player.pause();
+
+player.src="";
+
+document.getElementById("modal").style.display="none";
+
+}
+
+</script>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Conteúdo</title>
-    <style>
-        :root {
-            --cor-principal: #e50914;
-            --fundo: #141414;
-            --texto: #ffffff;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background-color: var(--fundo);
-            color: var(--texto);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        header {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), var(--fundo));
-            padding: 20px 5%;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--cor-principal);
-            letter-spacing: -2px;
-        }
-        
-        .titulo-principal {
-            font-size: 3.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-top: 120px;
-            margin-bottom: 30px;
-            background: linear-gradient(90deg, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .secao {
-            padding: 0 5% 60px;
-        }
-        
-        .secao h2 {
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            border-left: 5px solid var(--cor-principal);
-            padding-left: 15px;
-        }
-        
-        .grid-videos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        
-        .card {
-            background: #222;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .card:hover {
-            transform: scale(1.08) translateY(-8px);
-            box-shadow: 0 20px 40px rgba(229, 9, 20, 0.3);
-        }
-        
-        .thumbnail {
-            width: 100%;
-            height: 158px;
-            object-fit: cover;
-            transition: transform 0.4s;
-        }
-        
-        .card:hover .thumbnail {
-            transform: scale(1.05);
-        }
-        
-        .play-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70px;
-            height: 70px;
-            background: rgba(229, 9, 20, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-        
-        .card:hover .play-overlay {
-            opacity: 1;
-        }
-        
-        .play-overlay::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 18px solid white;
-            border-top: 12px solid transparent;
-            border-bottom: 12px solid transparent;
-            margin-left: 4px;
-        }
-        
-        .info-card {
-            padding: 18px;
-        }
-        
-        .info-card h3 {
-            font-size: 1.15rem;
-            margin-bottom: 8px;
-            color: white;
-        }
-        
-        .info-card p {
-            color: #bbb;
-            font-size: 0.95rem;
-        }
-        
-        .btn-assistir {
-            margin-top: 12px;
-            background: var(--cor-principal);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .btn-assistir:hover {
-            background: #f40612;
-        }
-        
-        /* MODAL PLAYER */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            width: 100%;
-            max-width: 1100px;
-            background: #1a1a1a;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 0 60px rgba(229, 9, 20, 0.5);
-            position: relative;
-        }
-        
-        .modal-header {
-            padding: 20px 30px;
-            background: #111;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-header h2 {
-            font-size: 1.4rem;
-            color: white;
-        }
-        
-        .close-btn {
-            font-size: 2.2rem;
-            color: #aaa;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .close-btn:hover {
-            color: white;
-        }
-        
-        .player-container {
-            padding: 20px;
-            background: #000;
-        }
-        
-        video {
-            width: 100%;
-            max-height: 75vh;
-            border-radius: 10px;
-            background: #000;
-        }
-        
-        .modal-footer {
-            padding: 15px 30px;
-            background: #111;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #777;
-        }
-        
-        /* Responsivo */
-        @media (max-width: 768px) {
-            .titulo-principal {
-                font-size: 2.4rem;
-            }
-            .grid-videos {
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            }
-        }
-        
-        /* Animações */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .card {
-            animation: fadeIn 0.6s backwards;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player de Vídeo e Música</title>
+  <title>Portal de Músicas • até 60 faixas</title>
+  <style>
+    :root {
+      --cor-principal: #e50914;
+      --fundo: #141414;
+      --fundo-secundario: #1f1f1f;
+      --texto: #ffffff;
+      --texto-secundario: #b4b4b4;
+      --borda: #2d2d2d;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: radial-gradient(circle at top, #1c1c1c, var(--fundo) 45%);
+      color: var(--texto);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 16px 5%;
+      backdrop-filter: blur(8px);
+      background: rgba(20, 20, 20, 0.92);
+      border-bottom: 1px solid var(--borda);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo { font-size: 1.9rem; font-weight: 900; letter-spacing: -1px; color: var(--cor-principal); }
+    .contador { color: var(--texto-secundario); font-size: .95rem; }
+    main { width: min(1300px, 90%); margin: 34px auto 52px; }
+    .hero { margin-bottom: 26px; }
+
+    .hero h1 {
+      font-size: clamp(1.7rem, 4vw, 3rem);
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #fff 0%, #cfcfcf 50%, #8f8f8f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p { color: var(--texto-secundario); }
+
+    .controles { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+
+    .controles input,
+    .controles select {
+      background: var(--fundo-secundario);
+      border: 1px solid var(--borda);
+      color: var(--texto);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: .95rem;
+    }
+
+    .controles input { min-width: min(500px, 100%); flex: 1; }
+
+    .grid-musicas {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    .card {
+      background: #222;
+      border-radius: 14px;
+      border: 1px solid var(--borda);
+      overflow: hidden;
+      transition: transform .25s ease, box-shadow .25s ease;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .card:hover { transform: translateY(-5px); box-shadow: 0 14px 28px rgba(229, 9, 20, .22); }
+
+    .thumb-box { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
+    .thumb-box img { width: 100%; height: 100%; object-fit: cover; opacity: .92; }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transition: opacity .2s ease;
+      background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.12));
+    }
+
+    .card:hover .play-overlay { opacity: 1; }
+
+    .play-overlay span {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      background: rgba(229,9,20,.9);
+      box-shadow: 0 8px 20px rgba(0,0,0,.4);
+    }
+
+    .info-card { padding: 12px; display: grid; gap: 8px; }
+    .info-card h3 { font-size: 1rem; min-height: 3em; }
+    .info-card p { color: var(--texto-secundario); font-size: .86rem; }
+
+    .btn-ouvir {
+      margin-top: 2px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 9px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: 600;
+      background: var(--cor-principal);
+    }
+
+    .vazio { border: 1px dashed var(--borda); border-radius: 12px; padding: 22px; text-align: center; color: var(--texto-secundario); }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0,0,0,.93);
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .modal-content {
+      width: min(800px, 100%);
+      background: #121212;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #2f2f2f;
+    }
+
+    .modal-header,
+    .modal-footer {
+      background: #0c0c0c;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .modal-header h2 { font-size: 1.2rem; flex: 1; }
+
+    .close-btn {
+      border: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.6rem;
+      line-height: 1;
+      background: #2a2a2a;
+      cursor: pointer;
+    }
+
+    .player-container { padding: 18px; background: #000; }
+    audio { width: 100%; }
+    .modal-footer { color: var(--texto-secundario); font-size: .85rem; justify-content: center; }
+
+    @media (max-width: 640px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .controles input, .controles select { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header>
-        <div class="logo">PORTAL</div>
-        <div style="color:#aaa; font-size:1.1rem;">Conteúdo • Lawtechs</div>
-    </header>
+  <header>
+    <div class="logo">MUSIC60</div>
+    <div class="contador" id="contador-header">0 músicas listadas</div>
+  </header>
 
-    <!-- TÍTULO PRINCIPAL -->
-    <h1 class="titulo-principal">Portal de Conteúdo</h1>
+  <main>
+    <h1>Site de Mídia</h1>
 
-    <!-- SEÇÃO VÍDEOS -->
-    <section class="secao">
-        <h2>Vídeos</h2>
-        
-        <div class="grid-videos" id="grid-videos">
-            <!-- Cards serão gerados via JavaScript -->
-        </div>
+    <section>
+      <h2>Vídeo</h2>
+      <video controls width="720">
+        <source src="video1.mp4" type="video/mp4" />
+        Seu navegador não suporta vídeo.
+      </video>
+    <section class="hero">
+      <h1>Portal de Músicas • até 60 faixas</h1>
+      <p>As primeiras 29 faixas usam os arquivos locais existentes (<strong>musica1.mp3</strong> até <strong>musica29.mp3</strong>). Até completar 60, o catálogo replica essa base.</p>
     </section>
 
-    <!-- MODAL PLAYER -->
-    <div class="modal" id="modal-player">
-        <div class="modal-content">
-            <!-- Cabeçalho do modal -->
-            <div class="modal-header">
-                <h2 id="modal-titulo">Título do Vídeo</h2>
-                <span class="close-btn" id="btn-fechar">×</span>
-            </div>
-            
-            <!-- Player -->
-            <div class="player-container">
-                <video id="video-player" controls autoplay>
-                    Seu navegador não suporta o elemento de vídeo.
-                </video>
-            </div>
-            
-            <div class="modal-footer">
-                Pressione ESC ou clique em × para fechar
-            </div>
-        </div>
+    <section>
+      <h2>Músicas</h2>
+      <audio id="music-player" controls></audio>
+      <div>
+        <button type="button" data-src="musica1.mp3">Música 1</button>
+        <button type="button" data-src="musica2.mp3">Música 2</button>
+        <button type="button" data-src="musica3.mp3">Música 3</button>
+        <button type="button" data-src="musica4.mp3">Música 4</button>
+        <button type="button" data-src="musica5.mp3">Música 5</button>
+      </div>
+    <section class="controles">
+      <input id="busca" type="search" placeholder="Buscar por título, ex: Música 12" aria-label="Buscar músicas" />
+      <select id="filtro-categoria" aria-label="Filtrar por categoria">
+        <option value="todas">Todas categorias</option>
+      </select>
+    </section>
+
+    <section class="grid-musicas" id="grid-musicas"></section>
+    <div id="mensagem-vazio" class="vazio" hidden>Nenhuma música encontrada para esse filtro.</div>
+  </main>
+
+  <div class="modal" id="modal-player" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-titulo">Título da música</h2>
+        <button class="close-btn" id="btn-fechar" type="button" aria-label="Fechar modal">×</button>
+      </div>
+      <div class="player-container">
+        <audio id="audio-player" controls autoplay>
+          Seu navegador não suporta o elemento de áudio.
+        </audio>
+      </div>
+      <div class="modal-footer">Pressione ESC ou clique fora para fechar</div>
     </div>
+  </div>
 
-    <script>
-        // ==================== DADOS DOS VÍDEOS ====================
-        // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-        // Aqui você troca facilmente os vídeos e thumbnails!
-        const videos = [
-            {
-                id: 1,
-                titulo: "Radar AB2L 2026 - Lawtechs Brasileiras",
-                src: "video1.mp4",
-                thumb: "https://picsum.photos/id/1015/600/338"
-            },
-            {
-                id: 2,
-                titulo: "Como a netLex revoluciona contratos com IA",
-                src: "video2.mp4",
-                thumb: "https://picsum.photos/id/201/600/338"
-            },
-            {
-                id: 3,
-                titulo: "Jusbrasil + IA: Pesquisa Jurídica em Segundos",
-                src: "video3.mp4",
-                thumb: "https://picsum.photos/id/237/600/338"
-            }
-        ];
+  <script>
+    const player = document.getElementById('music-player');
+    const buttons = document.querySelectorAll('button[data-src]');
+    const totalDeMusicas = 60;
+    const arquivosLocais = Array.from({ length: 29 }, (_, idx) => `musica${idx + 1}.mp3`);
+    const categorias = ["Lo-fi", "Concentração", "Energia", "Relax", "Clássicos"];
 
-        // ==================== RENDERIZAR CARDS ====================
-        function renderizarCards() {
-            const grid = document.getElementById('grid-videos');
-            grid.innerHTML = '';
-            
-            videos.forEach(video => {
-                const cardHTML = `
-                    <div class="card" data-id="${video.id}">
-                        <div style="position:relative;">
-                            <img src="${video.thumb}" alt="${video.titulo}" class="thumbnail">
-                            <div class="play-overlay"></div>
-                        </div>
-                        <div class="info-card">
-                            <h3>${video.titulo}</h3>
-                            <button class="btn-assistir">▶ Assistir agora</button>
-                        </div>
-                    </div>
-                `;
-                grid.innerHTML += cardHTML;
-            });
-            
-            // Adicionar eventos de clique
-            document.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const id = parseInt(card.dataset.id);
-                    const videoSelecionado = videos.find(v => v.id === id);
-                    abrirPlayer(videoSelecionado);
-                });
-            });
-        }
+    const musicas = Array.from({ length: totalDeMusicas }, (_, idx) => {
+      const numero = idx + 1;
+      const categoria = categorias[idx % categorias.length];
+      const arquivoBase = arquivosLocais[idx % arquivosLocais.length];
 
-        // ==================== ABRIR PLAYER MODAL ====================
-        function abrirPlayer(video) {
-            const modal = document.getElementById('modal-player');
-            const videoElement = document.getElementById('video-player');
-            const tituloElement = document.getElementById('modal-titulo');
-            
-            tituloElement.textContent = video.titulo;
-            videoElement.src = video.src;
-            
-            modal.style.display = 'flex';
-            videoElement.play();
-        }
+      return {
+        id: numero,
+        titulo: `Música ${numero}`,
+        descricao: `Faixa ${numero} • categoria ${categoria}`,
+        categoria,
+        src: arquivoBase,
+        thumb: `https://picsum.photos/seed/musica-${numero}/640/360`
+      };
+    });
 
-        // ==================== FECHAR MODAL ====================
-        function fecharModal() {
-            const modal = document.getElementById('modal-player');
-            const videoElement = document.getElementById('video-player');
-            
-            videoElement.pause();
-            videoElement.src = '';
-            modal.style.display = 'none';
-        }
+    const elementos = {
+      grid: document.getElementById("grid-musicas"),
+      busca: document.getElementById("busca"),
+      filtro: document.getElementById("filtro-categoria"),
+      vazio: document.getElementById("mensagem-vazio"),
+      contador: document.getElementById("contador-header"),
+      modal: document.getElementById("modal-player"),
+      modalTitulo: document.getElementById("modal-titulo"),
+      player: document.getElementById("audio-player"),
+      btnFechar: document.getElementById("btn-fechar")
+    };
 
-        // ==================== EVENTOS ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            renderizarCards();
-            
-            // Botão fechar
-            document.getElementById('btn-fechar').addEventListener('click', fecharModal);
-            
-            // Fechar com ESC
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    fecharModal();
-                }
-            });
-            
-            // Fechar clicando fora do conteúdo
-            const modal = document.getElementById('modal-player');
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) fecharModal();
-            });
-        });
-    </script>
+    function popularCategorias() {
+      const opcoes = [...new Set(musicas.map((musica) => musica.categoria))];
+      opcoes.forEach((categoria) => {
+        const option = document.createElement("option");
+        option.value = categoria;
+        option.textContent = categoria;
+        elementos.filtro.append(option);
+      });
+    }
+
+    function filtrarMusicas() {
+      const termo = elementos.busca.value.trim().toLowerCase();
+      const categoria = elementos.filtro.value;
+
+      return musicas.filter((musica) => {
+        const bateBusca = musica.titulo.toLowerCase().includes(termo);
+        const bateCategoria = categoria === "todas" || musica.categoria === categoria;
+        return bateBusca && bateCategoria;
+      });
+    }
+
+    function renderizarCards(lista) {
+      elementos.grid.innerHTML = "";
+
+      lista.forEach((musica) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.dataset.id = musica.id;
+        card.innerHTML = `
+          <div class="thumb-box">
+            <img src="${musica.thumb}" alt="Thumbnail da ${musica.titulo}" loading="lazy" />
+            <div class="play-overlay"><span>▶</span></div>
+          </div>
+          <div class="info-card">
+            <h3>${musica.titulo}</h3>
+            <p>${musica.descricao}<br><small>Arquivo: ${musica.src}</small></p>
+            <button class="btn-ouvir" type="button">Ouvir agora</button>
+          </div>
+        `;
+
+        card.addEventListener("click", () => abrirPlayer(musica));
+        elementos.grid.append(card);
+      });
+
+      elementos.vazio.hidden = lista.length !== 0;
+      elementos.contador.textContent = `${lista.length} música(s) listada(s) de ${musicas.length}`;
+    }
+
+    function abrirPlayer(musica) {
+      elementos.modalTitulo.textContent = `${musica.titulo} • ${musica.src}`;
+      elementos.player.src = musica.src;
+      elementos.modal.style.display = "flex";
+      elementos.modal.setAttribute("aria-hidden", "false");
+      elementos.player.play().catch((erro) => {
+        console.error("Falha ao iniciar áudio:", erro);
+      });
+    }
+
+    function fecharModal() {
+      elementos.player.pause();
+      elementos.player.src = "";
+      elementos.modal.style.display = "none";
+      elementos.modal.setAttribute("aria-hidden", "true");
+    }
+
+    function atualizarLista() {
+      renderizarCards(filtrarMusicas());
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      popularCategorias();
+      atualizarLista();
+
+      elementos.busca.addEventListener("input", atualizarLista);
+      elementos.filtro.addEventListener("change", atualizarLista);
+      elementos.btnFechar.addEventListener("click", fecharModal);
+
+      document.addEventListener("keydown", (evento) => {
+        if (evento.key === "Escape") fecharModal();
+      });
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        player.src = button.dataset.src;
+        player.play().catch(() => {});
+      elementos.modal.addEventListener("click", (evento) => {
+        if (evento.target === elementos.modal) fecharModal();
+      });
+    });
+  </script>
 </body>
 </html>
