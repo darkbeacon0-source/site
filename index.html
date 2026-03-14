@@ -1,10 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Portal de Conteúdo - Grupo AEC</title>
+<title>Portal Interno - Grupo AEC</title>
 
 <style>
 
@@ -14,6 +15,43 @@ margin:0;
 background:#f2f2f2;
 color:#333;
 }
+
+/* LOGIN */
+
+#loginTela{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#2c3e50;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.login-box{
+background:white;
+padding:30px;
+border-radius:8px;
+width:280px;
+text-align:center;
+}
+
+.login-box input{
+width:100%;
+padding:10px;
+margin:10px 0;
+}
+
+.login-box button{
+width:100%;
+padding:10px;
+cursor:pointer;
+}
+
+/* HEADER */
 
 header{
 background:#2c3e50;
@@ -42,6 +80,8 @@ cursor:pointer;
 nav button:hover{
 text-decoration:underline;
 }
+
+/* SECTIONS */
 
 .section{
 display:none;
@@ -110,6 +150,25 @@ width:30%;
 </head>
 
 <body>
+
+<!-- LOGIN -->
+
+<div id="loginTela">
+
+<div class="login-box">
+
+<h3>Acesso ao Portal</h3>
+
+<input id="usuario" placeholder="Usuário">
+<input id="senha" type="password" placeholder="Senha">
+
+<button onclick="logar()">Entrar</button>
+
+<p id="erroLogin" style="color:red"></p>
+
+</div>
+
+</div>
 
 <header>Portal Interno - Grupo AEC</header>
 
@@ -187,6 +246,25 @@ width:30%;
 <audio id="audio"></audio>
 
 <script>
+
+/* LOGIN */
+
+function logar(){
+
+let u=document.getElementById("usuario").value
+let s=document.getElementById("senha").value
+
+if(u==="admin" && s==="admin"){
+
+document.getElementById("loginTela").style.display="none"
+
+}else{
+
+document.getElementById("erroLogin").innerText="Usuário ou senha incorretos"
+
+}
+
+}
 
 /* ABAS */
 
@@ -311,7 +389,6 @@ audio.volume=volume.value
 const videos=[
 
 {titulo:"Treinamento 01",arquivo:"videos/video1.mp4",thumb:"https://picsum.photos/300/200?1"},
-
 {titulo:"Treinamento 02",arquivo:"videos/video2.mp4",thumb:"https://picsum.photos/300/200?2"}
 
 ]
@@ -372,3 +449,4 @@ renderManga()
 
 </body>
 </html>
+```
