@@ -9,11 +9,7 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background:#141414; color:white; font-family:Arial, sans-serif; }
         
-        header {
-            background: linear-gradient(#000, #141414);
-            padding:20px 5%; position:fixed; width:100%; z-index:1000;
-            display:flex; justify-content:space-between; align-items:center;
-        }
+        header { background: linear-gradient(#000, #141414); padding:20px 5%; position:fixed; width:100%; z-index:1000; display:flex; justify-content:space-between; align-items:center; }
         .logo { font-size:2.5rem; font-weight:900; color:var(--vermelho); }
         
         h1 { text-align:center; margin-top:110px; font-size:2.8rem; margin-bottom:20px; }
@@ -24,29 +20,16 @@
             background:#222; color:white; font-size:1.1rem;
         }
         
-        .grid {
-            display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
-            gap:20px; padding:0 5%; max-width:1200px; margin:0 auto;
-        }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px; padding:0 5%; max-width:1200px; margin:0 auto; }
         
-        .card {
-            background:#222; border-radius:12px; overflow:hidden;
-            cursor:pointer; transition:0.3s;
-        }
+        .card { background:#222; border-radius:12px; overflow:hidden; cursor:pointer; transition:0.3s; }
         .card:hover { transform:scale(1.08); box-shadow:0 10px 20px rgba(229,9,20,0.3); }
         .thumbnail { width:100%; height:160px; object-fit:cover; }
         .info { padding:15px; text-align:center; }
         
-        .modal {
-            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.95); z-index:2000; align-items:center; justify-content:center;
-        }
-        .modal-content {
-            width:90%; max-width:800px; background:#1a1a1a; border-radius:16px; overflow:hidden;
-        }
-        .modal-header {
-            padding:15px 25px; background:#111; display:flex; justify-content:space-between; align-items:center;
-        }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; align-items:center; justify-content:center; }
+        .modal-content { width:90%; max-width:800px; background:#1a1a1a; border-radius:16px; overflow:hidden; }
+        .modal-header { padding:15px 25px; background:#111; display:flex; justify-content:space-between; align-items:center; }
         .close { font-size:3rem; cursor:pointer; color:#aaa; }
         
         audio { width:100%; padding:10px 20px; }
@@ -64,7 +47,6 @@
 
 <div class="grid" id="grid"></div>
 
-<!-- MODAL PLAYER -->
 <div class="modal" id="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -72,39 +54,37 @@
             <span class="close" onclick="fecharModal()">×</span>
         </div>
         <div id="modal-body" style="padding:20px; background:#000; text-align:center;">
-            <img id="modal-capa" style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;">
+            <img id="modal-capa" style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;" src="https://picsum.photos/id/1016/600/338">
             <audio id="audio-player" controls autoplay style="width:90%; margin-top:20px;"></audio>
         </div>
     </div>
 </div>
 
 <script>
-// ==================== SUAS 29 MÚSICAS ====================
-// Edite aqui: título e nome do arquivo
-const musicas = [
-    {titulo: "Música 01", arquivo: "musica01.mp3", thumb: "https://picsum.photos/id/1016/600/338"},
-    {titulo: "Música 02", arquivo: "musica02.mp3", thumb: "https://picsum.photos/id/237/600/338"},
-    {titulo: "Música 03", arquivo: "musica03.mp3", thumb: "https://picsum.photos/id/180/600/338"},
-    // ←←← Adicione as outras 26 aqui no mesmo formato
-    // Exemplo:
-    // {titulo: "Música 04", arquivo: "musica04.mp3", thumb: "https://picsum.photos/id/201/600/338"},
-];
+// Gera automaticamente as 29 músicas (você não precisa editar nada)
+const musicas = Array.from({length: 29}, (_, i) => {
+    const num = String(i+1).padStart(2, '0');
+    return {
+        titulo: `Música ${num}`,
+        arquivo: `musica${num}.mp3`,
+        thumb: "https://picsum.photos/id/1016/600/338"
+    };
+});
 
 let musicasFiltradas = [...musicas];
 
 function renderizar() {
     const grid = document.getElementById('grid');
     grid.innerHTML = musicasFiltradas.map(m => `
-        <div class="card" onclick="tocar('${m.arquivo}', '${m.titulo}', '${m.thumb}')">
+        <div class="card" onclick="tocar('${m.arquivo}', '${m.titulo}')">
             <img src="${m.thumb}" class="thumbnail">
             <div class="info"><h3>${m.titulo}</h3></div>
         </div>
     `).join('');
 }
 
-function tocar(arquivo, titulo, thumb) {
+function tocar(arquivo, titulo) {
     document.getElementById('modal-titulo').textContent = titulo;
-    document.getElementById('modal-capa').src = thumb;
     document.getElementById('audio-player').src = arquivo;
     document.getElementById('modal').style.display = 'flex';
 }
