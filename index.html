@@ -60,5 +60,48 @@ document.getElementById("modal").style.display="none";
 
 </script>
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player de Vídeo e Música</title>
+</head>
+<body>
+  <main>
+    <h1>Site de Mídia</h1>
+
+    <section>
+      <h2>Vídeo</h2>
+      <video controls width="720">
+        <source src="video1.mp4" type="video/mp4" />
+        Seu navegador não suporta vídeo.
+      </video>
+    </section>
+
+    <section>
+      <h2>Músicas</h2>
+      <audio id="music-player" controls></audio>
+      <div>
+        <button type="button" data-src="musica1.mp3">Música 1</button>
+        <button type="button" data-src="musica2.mp3">Música 2</button>
+        <button type="button" data-src="musica3.mp3">Música 3</button>
+        <button type="button" data-src="musica4.mp3">Música 4</button>
+        <button type="button" data-src="musica5.mp3">Música 5</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const player = document.getElementById('music-player');
+    const buttons = document.querySelectorAll('button[data-src]');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        player.src = button.dataset.src;
+        player.play().catch(() => {});
+      });
+    });
+  </script>
 </body>
 </html>
