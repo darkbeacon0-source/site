@@ -31,7 +31,7 @@ nav button:hover{text-decoration:underline;}
 .card img{width:100%;height:140px;object-fit:cover;}
 .card p{padding:10px;margin:0;}
 
-canvas{background:#000;border-radius:10px;}
+canvas{background:#000;border-radius:10px;margin:10px;}
 
 .player{
 position:fixed;bottom:0;left:0;width:100%;
@@ -62,25 +62,30 @@ background:#2c3e50;color:white;display:flex;align-items:center;justify-content:s
 <button onclick="mostrar('jogos')">Jogos</button>
 </nav>
 
-<div id="musicas" class="section active"><h2>Cursos</h2></div>
-<div id="videos" class="section"><h2>Biblioteca</h2></div>
-<div id="mangas" class="section"><h2>Documentos</h2></div>
+<!-- MUSICAS -->
+<div id="musicas" class="section active">
+<h2>Cursos</h2>
+</div>
+
+<!-- VIDEOS -->
+<div id="videos" class="section">
+<h2>Biblioteca de Vídeos</h2>
+<div class="grid" id="gridVideos"></div>
+<br>
+<video id="playerVideo" width="100%" controls></video>
+</div>
+
+<!-- MANGAS -->
+<div id="mangas" class="section">
+<h2>Documentos</h2>
+<div id="mangaViewer"></div>
+</div>
 
 <!-- JOGOS -->
 <div id="jogos" class="section">
-
 <h2>🎮 Arcade Offline</h2>
 
-<div style="display:flex;flex-wrap:wrap;gap:40px;justify-content:center;">
-
 <canvas id="snake" width="250" height="250"></canvas>
-<canvas id="pong" width="250" height="250"></canvas>
-<canvas id="flappy" width="250" height="250"></canvas>
-<canvas id="tetris" width="250" height="250"></canvas>
-
-<div id="minesweeper"></div>
-
-</div>
 
 </div>
 
@@ -91,7 +96,7 @@ function logar(){
 if(usuario.value==="admin" && senha.value==="admin"){
 loginTela.style.display="none"
 }else{
-erroLogin.innerText="Erro"
+erroLogin.innerText="Usuário ou senha incorretos"
 }
 }
 
@@ -101,83 +106,90 @@ document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
 document.getElementById(s).classList.add("active")
 }
 
-/* COBRINHA */
-let sctx=snake.getContext("2d")
-let s=[{x:10,y:10}],f={x:5,y:5},dx=1,dy=0
+/* ================= VIDEOS ================= */
+
+const videos = [
+{
+titulo: "Treinamento 01",
+arquivo: "videos/video1.mp4",
+thumb: "https://picsum.photos/300/200?1"
+}
+];
+
+const gridVideos = document.getElementById("gridVideos");
+const player = document.getElementById("playerVideo");
+
+function renderVideos(){
+gridVideos.innerHTML = videos.map(v => `
+<div class="card" onclick="playVideo('${v.arquivo}', '${v.titulo}')">
+<img src="${v.thumb}">
+<p>${v.titulo}</p>
+</div>
+`).join("");
+}
+
+function playVideo(src, titulo){
+player.src = src;
+player.play();
+document.querySelector("#videos h2").innerText = "▶️ " + titulo;
+}
+
+renderVideos();
+
+/* ================= MANGAS ================= */
+
+const mangas = [
+{
+nome:"Exemplo",
+paginas:[
+"mangas/01.jpg",
+"mangas/02.jpg"
+]
+}
+];
+
+const mangaViewer=document.getElementById("mangaViewer");
+
+function renderMangaLista(){
+mangaViewer.innerHTML = mangas.map((m,i)=>`
+<div class="card" onclick="abrirManga(${i})">
+<p>${m.nome}</p>
+</div>
+`).join("");
+}
+
+function abrirManga(i){
+mangaViewer.innerHTML = mangas[i].paginas.map(p=>
+`<img src="${p}" style="width:100%;margin-bottom:20px">`
+).join("");
+}
+
+renderMangaLista();
+
+/* ================= COBRINHA ================= */
+
+const ctx = snake.getContext("2d");
+
+let s=[{x:10,y:10}],f={x:5,y:5},dx=1,dy=0;
 
 document.addEventListener("keydown",e=>{
 if(e.key==="ArrowUp"){dx=0;dy=-1}
 if(e.key==="ArrowDown"){dx=0;dy=1}
 if(e.key==="ArrowLeft"){dx=-1;dy=0}
 if(e.key==="ArrowRight"){dx=1;dy=0}
-})
+});
 
 setInterval(()=>{
-s.unshift({x:s[0].x+dx,y:s[0].y+dy})
-if(s[0].x==f.x&&s[0].y==f.y){f={x:Math.random()*20|0,y:Math.random()*20|0}}else{s.pop()}
-sctx.clearRect(0,0,250,250)
-sctx.fillStyle="lime"
-s.forEach(p=>sctx.fillRect(p.x*10,p.y*10,10,10))
-sctx.fillStyle="red"
-sctx.fillRect(f.x*10,f.y*10,10,10)
-},100)
-
-/* PONG */
-let pctx=pong.getContext("2d")
-let by=100,py=100,bx=100,dxp=2,dyp=2
-
-setInterval(()=>{
-pctx.clearRect(0,0,250,250)
-bx+=dxp;by+=dyp
-if(by<0||by>230)dyp*=-1
-if(bx<10&&by>py&&by<py+60)dxp*=-1
-if(bx>240)dxp*=-1
-py+=((by-py)-30)*0.05
-pctx.fillRect(5,py,5,60)
-pctx.fillRect(bx,by,10,10)
-},30)
-
-/* FLAPPY */
-let fctx=flappy.getContext("2d")
-let fy=100,vel=0,pipe=250
-
-document.addEventListener("click",()=>vel=-5)
-
-setInterval(()=>{
-vel+=0.3;fy+=vel;pipe-=2
-if(pipe<-20)pipe=250
-fctx.clearRect(0,0,250,250)
-fctx.fillRect(50,fy,10,10)
-fctx.fillRect(pipe,0,20,100)
-fctx.fillRect(pipe,150,20,100)
-},30)
-
-/* TETRIS (simplificado) */
-let tctx=tetris.getContext("2d")
-let ty=0
-
-setInterval(()=>{
-tctx.clearRect(0,0,250,250)
-tctx.fillRect(100,ty,20,20)
-ty+=5
-if(ty>230)ty=0
-},100)
-
-/* CAMPO MINADO */
-let m=document.getElementById("minesweeper")
-let size=6
-
-function init(){
-m.innerHTML=""
-for(let i=0;i<size*size;i++){
-let c=document.createElement("div")
-c.style="width:30px;height:30px;border:1px solid;display:inline-flex;align-items:center;justify-content:center"
-c.onclick=()=>c.innerText=Math.random()<0.2?"💣":"✔"
-m.appendChild(c)
-if((i+1)%size==0)m.appendChild(document.createElement("br"))
-}
-}
-init()
+s.unshift({x:s[0].x+dx,y:s[0].y+dy});
+if(s[0].x==f.x&&s[0].y==f.y){
+f={x:Math.random()*20|0,y:Math.random()*20|0}
+}else{s.pop();}
+ctx.clearRect(0,0,250,250);
+ctx.fillStyle="lime";
+s.forEach(p=>ctx.fillRect(p.x*10,p.y*10,10,10));
+ctx.fillStyle="red";
+ctx.fillRect(f.x*10,f.y*10,10,10);
+},100);
 
 </script>
 
