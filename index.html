@@ -1,452 +1,197 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Portal Interno - Grupo AEC</title>
 
 <style>
-
-body{
-font-family:Arial;
-margin:0;
-background:#f2f2f2;
-color:#333;
-}
+body{font-family:Arial;margin:0;background:#f2f2f2;color:#333}
 
 /* LOGIN */
-
 #loginTela{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#2c3e50;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:9999;
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#2c3e50;display:flex;justify-content:center;align-items:center;z-index:9999;
 }
-
-.login-box{
-background:white;
-padding:30px;
-border-radius:8px;
-width:280px;
-text-align:center;
-}
-
-.login-box input{
-width:100%;
-padding:10px;
-margin:10px 0;
-}
-
-.login-box button{
-width:100%;
-padding:10px;
-cursor:pointer;
-}
+.login-box{background:white;padding:30px;border-radius:8px;width:280px;text-align:center;}
+.login-box input{width:100%;padding:10px;margin:10px 0;}
+.login-box button{width:100%;padding:10px;cursor:pointer;}
 
 /* HEADER */
+header{background:#2c3e50;color:white;padding:15px;text-align:center;font-size:20px;}
+nav{display:flex;justify-content:center;gap:20px;background:#34495e;padding:10px;}
+nav button{background:none;border:none;color:white;font-size:16px;cursor:pointer;}
+nav button:hover{text-decoration:underline;}
 
-header{
-background:#2c3e50;
-color:white;
-padding:15px;
-text-align:center;
-font-size:20px;
-}
+.section{display:none;padding:30px;}
+.active{display:block;}
 
-nav{
-display:flex;
-justify-content:center;
-gap:20px;
-background:#34495e;
-padding:10px;
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+.card{background:white;border-radius:8px;overflow:hidden;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.card img{width:100%;height:140px;object-fit:cover;}
+.card p{padding:10px;margin:0;}
 
-nav button{
-background:none;
-border:none;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-nav button:hover{
-text-decoration:underline;
-}
-
-/* SECTIONS */
-
-.section{
-display:none;
-padding:30px;
-}
-
-.active{
-display:block;
-}
-
-/* GRID */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-}
-
-.card{
-background:white;
-border-radius:8px;
-overflow:hidden;
-cursor:pointer;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
-}
-
-.card img{
-width:100%;
-height:140px;
-object-fit:cover;
-}
-
-.card p{
-padding:10px;
-margin:0;
-}
-
-/* PLAYER */
+canvas{background:#000;border-radius:10px;margin:10px;}
 
 .player{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#2c3e50;
-color:white;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:10px;
+position:fixed;bottom:0;left:0;width:100%;
+background:#2c3e50;color:white;display:flex;align-items:center;justify-content:space-between;padding:10px;
 }
-
-.controls button{
-background:none;
-border:none;
-color:white;
-font-size:20px;
-cursor:pointer;
-}
-
-.progress{
-width:30%;
-}
-
 </style>
 </head>
 
 <body>
 
 <!-- LOGIN -->
-
 <div id="loginTela">
-
 <div class="login-box">
-
 <h3>Acesso ao Portal</h3>
-
 <input id="usuario" placeholder="Usuário">
 <input id="senha" type="password" placeholder="Senha">
-
 <button onclick="logar()">Entrar</button>
-
 <p id="erroLogin" style="color:red"></p>
-
 </div>
-
 </div>
 
 <header>Portal Interno - Grupo AEC</header>
 
 <nav>
-
 <button onclick="mostrar('musicas')">Cursos</button>
 <button onclick="mostrar('videos')">Biblioteca</button>
 <button onclick="mostrar('mangas')">Documentos</button>
-
+<button onclick="mostrar('jogos')">Jogos</button>
 </nav>
 
 <!-- MUSICAS -->
-
 <div id="musicas" class="section active">
-
-<h2>Conteúdos de Áudio</h2>
-
-<div class="grid" id="gridMusicas"></div>
-
+<h2>Cursos</h2>
 </div>
 
 <!-- VIDEOS -->
-
 <div id="videos" class="section">
-
 <h2>Biblioteca de Vídeos</h2>
-
 <div class="grid" id="gridVideos"></div>
-
 <br>
-
 <video id="playerVideo" width="100%" controls></video>
-
 </div>
 
 <!-- MANGAS -->
-
 <div id="mangas" class="section">
-
-<h2>Leitor de Documentos</h2>
-
+<h2>Documentos</h2>
 <div id="mangaViewer"></div>
-
 </div>
 
-<!-- PLAYER AUDIO -->
+<!-- JOGOS -->
+<div id="jogos" class="section">
+<h2>🎮 Arcade Offline</h2>
 
-<div class="player">
-
-<div id="titulo">Nenhum áudio</div>
-
-<div class="controls">
-
-<button onclick="anterior()">⏮</button>
-<button onclick="playPause()">▶️</button>
-<button onclick="proxima()">⏭</button>
-<button onclick="toggleShuffle()">🔀</button>
+<canvas id="snake" width="250" height="250"></canvas>
 
 </div>
-
-<div class="progress">
-
-<input type="range" id="barra" value="0">
-
-</div>
-
-<div>
-
-<input type="range" id="volume" min="0" max="1" step="0.01" value="1">
-
-</div>
-
-</div>
-
-<audio id="audio"></audio>
 
 <script>
 
 /* LOGIN */
-
 function logar(){
-
-let u=document.getElementById("usuario").value
-let s=document.getElementById("senha").value
-
-if(u==="admin" && s==="admin"){
-
-document.getElementById("loginTela").style.display="none"
-
+if(usuario.value==="admin" && senha.value==="admin"){
+loginTela.style.display="none"
 }else{
-
-document.getElementById("erroLogin").innerText="Usuário ou senha incorretos"
-
+erroLogin.innerText="Usuário ou senha incorretos"
 }
-
 }
 
 /* ABAS */
-
-function mostrar(secao){
-
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
-
-document.getElementById(secao).classList.add("active")
-
+function mostrar(s){
+document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
+document.getElementById(s).classList.add("active")
 }
 
-/* MUSICAS */
+/* ================= VIDEOS ================= */
 
-const musicas = Array.from({length:29},(_,i)=>({
-
-titulo:`Curso ${i+1}`,
-arquivo:`musica${i+1}.mp3`,
-thumb:`https://picsum.photos/seed/${i}/400/300`
-
-}));
-
-const gridMusicas=document.getElementById("gridMusicas")
-const audio=document.getElementById("audio")
-
-let index=0
-let shuffle=false
-
-function renderMusicas(){
-
-gridMusicas.innerHTML=musicas.map((m,i)=>`
-
-<div class="card" onclick="tocar(${i})">
-
-<img src="${m.thumb}">
-
-<p>${m.titulo}</p>
-
-</div>
-
-`).join("")
-
+const videos = [
+{
+titulo: "Treinamento 01",
+arquivo: "videos/video1.mp4",
+thumb: "https://picsum.photos/300/200?1"
 }
+];
 
-function tocar(i){
-
-index=i
-
-audio.src=musicas[i].arquivo
-
-document.getElementById("titulo").textContent=musicas[i].titulo
-
-audio.play()
-
-}
-
-function playPause(){
-
-if(audio.paused) audio.play()
-else audio.pause()
-
-}
-
-function proxima(){
-
-if(shuffle){
-
-index=Math.floor(Math.random()*musicas.length)
-
-}else{
-
-index++
-if(index>=musicas.length) index=0
-
-}
-
-tocar(index)
-
-}
-
-function anterior(){
-
-index--
-if(index<0) index=musicas.length-1
-
-tocar(index)
-
-}
-
-function toggleShuffle(){
-
-shuffle=!shuffle
-alert("Modo aleatório: "+(shuffle?"ATIVO":"DESATIVADO"))
-
-}
-
-/* PROGRESSO */
-
-audio.addEventListener("timeupdate",()=>{
-
-barra.value=(audio.currentTime/audio.duration)*100
-
-})
-
-barra.addEventListener("input",()=>{
-
-audio.currentTime=(barra.value/100)*audio.duration
-
-})
-
-audio.addEventListener("ended",proxima)
-
-/* VOLUME */
-
-volume.addEventListener("input",()=>{
-
-audio.volume=volume.value
-
-})
-
-/* VIDEOS */
-
-const videos=[
-
-{titulo:"Treinamento 01",arquivo:"videos/video1.mp4",thumb:"https://picsum.photos/300/200?1"},
-{titulo:"Treinamento 02",arquivo:"videos/video2.mp4",thumb:"https://picsum.photos/300/200?2"}
-
-]
-
-const gridVideos=document.getElementById("gridVideos")
+const gridVideos = document.getElementById("gridVideos");
+const player = document.getElementById("playerVideo");
 
 function renderVideos(){
-
-gridVideos.innerHTML=videos.map(v=>`
-
-<div class="card" onclick="playVideo('${v.arquivo}')">
-
+gridVideos.innerHTML = videos.map(v => `
+<div class="card" onclick="playVideo('${v.arquivo}', '${v.titulo}')">
 <img src="${v.thumb}">
-
 <p>${v.titulo}</p>
-
 </div>
-
-`).join("")
-
+`).join("");
 }
 
-function playVideo(v){
-
-document.getElementById("playerVideo").src=v
-
+function playVideo(src, titulo){
+player.src = src;
+player.play();
+document.querySelector("#videos h2").innerText = "▶️ " + titulo;
 }
 
-/* MANGA */
+renderVideos();
 
-const mangaViewer=document.getElementById("mangaViewer")
+/* ================= MANGAS ================= */
 
-const paginas=[
-
+const mangas = [
+{
+nome:"Exemplo",
+paginas:[
 "mangas/01.jpg",
-"mangas/02.jpg",
-"mangas/03.jpg"
-
+"mangas/02.jpg"
 ]
+}
+];
 
-function renderManga(){
+const mangaViewer=document.getElementById("mangaViewer");
 
-mangaViewer.innerHTML=paginas.map(p=>
-
-`<img src="${p}" style="width:100%;margin-bottom:20px">`
-
-).join("")
-
+function renderMangaLista(){
+mangaViewer.innerHTML = mangas.map((m,i)=>`
+<div class="card" onclick="abrirManga(${i})">
+<p>${m.nome}</p>
+</div>
+`).join("");
 }
 
-/* INIT */
+function abrirManga(i){
+mangaViewer.innerHTML = mangas[i].paginas.map(p=>
+`<img src="${p}" style="width:100%;margin-bottom:20px">`
+).join("");
+}
 
-renderMusicas()
-renderVideos()
-renderManga()
+renderMangaLista();
+
+/* ================= COBRINHA ================= */
+
+const ctx = snake.getContext("2d");
+
+let s=[{x:10,y:10}],f={x:5,y:5},dx=1,dy=0;
+
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowUp"){dx=0;dy=-1}
+if(e.key==="ArrowDown"){dx=0;dy=1}
+if(e.key==="ArrowLeft"){dx=-1;dy=0}
+if(e.key==="ArrowRight"){dx=1;dy=0}
+});
+
+setInterval(()=>{
+s.unshift({x:s[0].x+dx,y:s[0].y+dy});
+if(s[0].x==f.x&&s[0].y==f.y){
+f={x:Math.random()*20|0,y:Math.random()*20|0}
+}else{s.pop();}
+ctx.clearRect(0,0,250,250);
+ctx.fillStyle="lime";
+s.forEach(p=>ctx.fillRect(p.x*10,p.y*10,10,10));
+ctx.fillStyle="red";
+ctx.fillRect(f.x*10,f.y*10,10,10);
+},100);
 
 </script>
 
 </body>
 </html>
-```
