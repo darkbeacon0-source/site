@@ -1,101 +1,185 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Conteúdo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #0f0f0f;
-            color: #ffffff;
-            font-family: 'Inter', Arial, sans-serif;
-            text-align: center;
-            line-height: 1.6;
-        }
-        header {
-            padding: 40px 20px 30px;
-            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
-        }
-        h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #00ff9d, #00b8ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            font-size: 1.3rem;
-            color: #aaaaaa;
-            font-weight: 400;
-        }
-        .video-container {
-            max-width: 960px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .video-box {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        video {
-            width: 100%;
-            max-width: 100%;
-            border-radius: 15px;
-            border: 3px solid #00ff9d;
-        }
-        .download-btn {
-            margin-top: 20px;
-            display: inline-block;
-            background: #00ff9d;
-            color: #0f0f0f;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .download-btn:hover {
-            background: #00cc7a;
-            transform: scale(1.05);
-        }
-        footer {
-            margin-top: 60px;
-            padding: 20px;
-            font-size: 0.9rem;
-            color: #555;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Interno - Grupo AEC</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#f2f2f2;color:#333}
+
+/* LOGIN */
+#loginTela{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#2c3e50;display:flex;justify-content:center;align-items:center;z-index:9999;
+}
+.login-box{background:white;padding:30px;border-radius:8px;width:280px;text-align:center;}
+.login-box input{width:100%;padding:10px;margin:10px 0;}
+.login-box button{width:100%;padding:10px;cursor:pointer;}
+
+/* HEADER */
+header{background:#2c3e50;color:white;padding:15px;text-align:center;font-size:20px;}
+nav{display:flex;justify-content:center;gap:20px;background:#34495e;padding:10px;}
+nav button{background:none;border:none;color:white;font-size:16px;cursor:pointer;}
+nav button:hover{text-decoration:underline;}
+
+.section{display:none;padding:30px;}
+.active{display:block;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+.card{background:white;border-radius:8px;overflow:hidden;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.card img{width:100%;height:140px;object-fit:cover;}
+.card p{padding:10px;margin:0;}
+
+canvas{background:#000;border-radius:10px;}
+
+.player{
+position:fixed;bottom:0;left:0;width:100%;
+background:#2c3e50;color:white;display:flex;align-items:center;justify-content:space-between;padding:10px;
+}
+</style>
 </head>
+
 <body>
-    <header>
-        <h1>Portal de Conteúdo</h1>
-        <p class="subtitle">Área de vídeos</p>
-    </header>
 
-    <div class="video-container">
-        <div class="video-box">
-            <video controls>
-                <source src="video.mp4" type="video/mp4">
-                Seu navegador não suporta vídeo.
-            </video>
-        </div>
-        
-        <a href="Download (2).mp4" download class="download-btn">
-            📥 Baixar vídeo
-        </a>
-    </div>
+<!-- LOGIN -->
+<div id="loginTela">
+<div class="login-box">
+<h3>Acesso ao Portal</h3>
+<input id="usuario" placeholder="Usuário">
+<input id="senha" type="password" placeholder="Senha">
+<button onclick="logar()">Entrar</button>
+<p id="erroLogin" style="color:red"></p>
+</div>
+</div>
 
-    <footer>
-        Grupo AOEC • 2026
-    </footer>
+<header>Portal Interno - Grupo AEC</header>
+
+<nav>
+<button onclick="mostrar('musicas')">Cursos</button>
+<button onclick="mostrar('videos')">Biblioteca</button>
+<button onclick="mostrar('mangas')">Documentos</button>
+<button onclick="mostrar('jogos')">Jogos</button>
+</nav>
+
+<div id="musicas" class="section active"><h2>Cursos</h2></div>
+<div id="videos" class="section"><h2>Biblioteca</h2></div>
+<div id="mangas" class="section"><h2>Documentos</h2></div>
+
+<!-- JOGOS -->
+<div id="jogos" class="section">
+
+<h2>🎮 Arcade Offline</h2>
+
+<div style="display:flex;flex-wrap:wrap;gap:40px;justify-content:center;">
+
+<canvas id="snake" width="250" height="250"></canvas>
+<canvas id="pong" width="250" height="250"></canvas>
+<canvas id="flappy" width="250" height="250"></canvas>
+<canvas id="tetris" width="250" height="250"></canvas>
+
+<div id="minesweeper"></div>
+
+</div>
+
+</div>
+
+<script>
+
+/* LOGIN */
+function logar(){
+if(usuario.value==="admin" && senha.value==="admin"){
+loginTela.style.display="none"
+}else{
+erroLogin.innerText="Erro"
+}
+}
+
+/* ABAS */
+function mostrar(s){
+document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
+document.getElementById(s).classList.add("active")
+}
+
+/* COBRINHA */
+let sctx=snake.getContext("2d")
+let s=[{x:10,y:10}],f={x:5,y:5},dx=1,dy=0
+
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowUp"){dx=0;dy=-1}
+if(e.key==="ArrowDown"){dx=0;dy=1}
+if(e.key==="ArrowLeft"){dx=-1;dy=0}
+if(e.key==="ArrowRight"){dx=1;dy=0}
+})
+
+setInterval(()=>{
+s.unshift({x:s[0].x+dx,y:s[0].y+dy})
+if(s[0].x==f.x&&s[0].y==f.y){f={x:Math.random()*20|0,y:Math.random()*20|0}}else{s.pop()}
+sctx.clearRect(0,0,250,250)
+sctx.fillStyle="lime"
+s.forEach(p=>sctx.fillRect(p.x*10,p.y*10,10,10))
+sctx.fillStyle="red"
+sctx.fillRect(f.x*10,f.y*10,10,10)
+},100)
+
+/* PONG */
+let pctx=pong.getContext("2d")
+let by=100,py=100,bx=100,dxp=2,dyp=2
+
+setInterval(()=>{
+pctx.clearRect(0,0,250,250)
+bx+=dxp;by+=dyp
+if(by<0||by>230)dyp*=-1
+if(bx<10&&by>py&&by<py+60)dxp*=-1
+if(bx>240)dxp*=-1
+py+=((by-py)-30)*0.05
+pctx.fillRect(5,py,5,60)
+pctx.fillRect(bx,by,10,10)
+},30)
+
+/* FLAPPY */
+let fctx=flappy.getContext("2d")
+let fy=100,vel=0,pipe=250
+
+document.addEventListener("click",()=>vel=-5)
+
+setInterval(()=>{
+vel+=0.3;fy+=vel;pipe-=2
+if(pipe<-20)pipe=250
+fctx.clearRect(0,0,250,250)
+fctx.fillRect(50,fy,10,10)
+fctx.fillRect(pipe,0,20,100)
+fctx.fillRect(pipe,150,20,100)
+},30)
+
+/* TETRIS (simplificado) */
+let tctx=tetris.getContext("2d")
+let ty=0
+
+setInterval(()=>{
+tctx.clearRect(0,0,250,250)
+tctx.fillRect(100,ty,20,20)
+ty+=5
+if(ty>230)ty=0
+},100)
+
+/* CAMPO MINADO */
+let m=document.getElementById("minesweeper")
+let size=6
+
+function init(){
+m.innerHTML=""
+for(let i=0;i<size*size;i++){
+let c=document.createElement("div")
+c.style="width:30px;height:30px;border:1px solid;display:inline-flex;align-items:center;justify-content:center"
+c.onclick=()=>c.innerText=Math.random()<0.2?"💣":"✔"
+m.appendChild(c)
+if((i+1)%size==0)m.appendChild(document.createElement("br"))
+}
+}
+init()
+
+</script>
+
 </body>
 </html>
